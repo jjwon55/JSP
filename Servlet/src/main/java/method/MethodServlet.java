@@ -45,6 +45,13 @@ public class MethodServlet extends HttpServlet {
 	// post
 	// - /method
 	// - body : username, password
+	//*
+	// Content-Type : application/x-www-form-urlencoded 경우 폼요청으로 인식하고
+	// request.getParameter()를 호출하면 본문(body)에서 데이터를 가져온다. 
+	//*
+	// Content-Type : multipart/form-data 의 경우는
+	// request.getParameter() 로 전달된 파라미터를 가져올 수 없다.!!!
+	// request.getPart("file")로 전달된 파일 데이터를 가져와야 한다.
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
