@@ -1,3 +1,5 @@
+<%@page import="org.apache.commons.fileupload2.core.FileItemFactory"%>
+<%@page import="org.apache.commons.fileupload2.core.DiskFileItemFactory"%>
 <%@page import="java.io.File"%>
 <%@page import="java.nio.charset.StandardCharsets"%>
 <%@page import="java.io.FileOutputStream"%>
@@ -7,7 +9,6 @@
 <%@page import="java.util.List"%>
 <%@page import="org.apache.commons.fileupload2.jakarta.JakartaServletRequestContext"%>
 <%@page import="org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload"%>
-<%@page import="org.apache.commons.fileupload.servlet.ServletFileUpload"%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -24,6 +25,8 @@
 	request.setCharacterEncoding("UTF-8");
 	
 	// 파일 파라미터 확인
+	File repository = new File( System.getProperty("java.io.tmpdir"));
+	FileItemFactory factory = DiskFileItemFactory.builder().setFile(repository).get();
 	JakartaServletFileUpload upload = new JakartaServletFileUpload();
 	JakartaServletRequestContext context = new JakartaServletRequestContext(request);
 	
