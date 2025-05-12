@@ -17,7 +17,7 @@
 	if( !uploadDir.exists() ) {  // 해당 경로가 존재하지 않으면
 		uploadDir.mkdirs();      // 디렉토리 생성
 	}
-
+//
 	// 클라이언트 요청의 문자 인코딩 설정
 	request.setCharacterEncoding("UTF-8");
 

@@ -10,9 +10,9 @@
 	<header>
 		<h1>헤더 영역</h1>
 		<ul>
-			<li><%= menu1 %></li>
-			<li><%= menu2 %></li>
-			<li><%= menu3 %></li>
+<%-- 			<li><%= menu1 %></li> --%>
+<%-- 			<li><%= menu2 %></li> --%>
+<%-- 			<li><%= menu3 %></li> --%>
 		</ul>
 	</header>
 </body>
