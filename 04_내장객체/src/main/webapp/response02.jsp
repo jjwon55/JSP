@@ -4,14 +4,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>내장 객체 - response</title>
+	<meta charset="UTF-8">
+	<title>5초마다 새로고침</title>
 </head>
 <body>
 	<h5>5초마다 새로고침</h5>
 	<%
-		response.setIntHeader("Refresh", 5);
+		response.setIntHeader("Refresh", 5);		
 	%>
 	<h3><%= new Date() %></h3>
 </body>
 </html>
+
+
+
+
+

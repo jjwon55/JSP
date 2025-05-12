@@ -9,8 +9,12 @@
 <body>
 	<footer>
 		<p>푸터 영역</p>
-		<!-- <p>Copyright All rights reserved.</p> -->
+<!-- 		<p>Copyright All rights reserved.</p> -->
 		<%@ include file="copy.txt" %>
 	</footer>
 </body>
 </html>
+
+
+
+

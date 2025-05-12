@@ -1,8 +1,7 @@
-<%@page import="DTO.User"%>
 <%@page import="java.util.Random"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Arrays"%>
-<%@ page import="DTO.User"%>
+<%@ page import="dto.User"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -45,7 +44,7 @@
 		String root = request.getContextPath();
 		// 회원가입 성공
 		if( result > 0 ) {
-			//s 1. 메인 화면으로 이동
+			// 1. 메인 화면으로 이동
 			// response.sendRedirect(root + "/");
 			// 2. 로그인 화면으로 이동
 			response.sendRedirect(root + "/login.jsp");

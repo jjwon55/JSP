@@ -11,7 +11,6 @@
 		String menu1 = "Home";
 		String menu2 = "Board";
 		String menu3 = "Gallery";
-	
 	%>
 	<%@ include file="header.jsp" %>
 	<main>
@@ -22,3 +21,10 @@
 	<%@ include file="footer.jsp" %>
 </body>
 </html>
+
+
+
+
+
+
+

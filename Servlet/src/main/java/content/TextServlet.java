@@ -10,11 +10,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-/**
- * Servlet implementation class TextServlet
- */
 @WebServlet("/TextServlet")
 public class TextServlet extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -22,16 +20,17 @@ public class TextServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//1. 문자 입력 스트림 가져오기
+		// 요청
+		// 1. 문자 입력 스트림 가져오기
 		BufferedReader reader = request.getReader();
-		//2. 텍스트 데이터 읽기
+		// 2. 텍스트 데이터 읽기
 		StringBuilder sb = new StringBuilder();
 		String line;
-		while( (line = reader.readLine()) != null) {
+		while( (line = reader.readLine()) != null ) {
 			sb.append(line);
 		}
 		String requestText = sb.toString();
-		// 3. 요청텍스트 확인
+		// 3. 요청 텍스트 확인
 		System.out.println("텍스트 : " + requestText);
 		
 		// 응답
@@ -40,5 +39,10 @@ public class TextServlet extends HttpServlet {
 		PrintWriter writer = response.getWriter();
 		writer.println(responseText);
 	}
+	
 
 }
+
+
+
+

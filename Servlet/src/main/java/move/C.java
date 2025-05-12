@@ -28,8 +28,7 @@ public class C extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 리다이렉트 방식으로 페이지 이동
 		String root = request.getContextPath();
-		response.sendRedirect(root + "/");
-	
+		response.sendRedirect(root + "/");				// 메인화면으로 이동
 	}
 
 	/**
@@ -41,3 +40,8 @@ public class C extends HttpServlet {
 	}
 
 }
+
+
+
+
+

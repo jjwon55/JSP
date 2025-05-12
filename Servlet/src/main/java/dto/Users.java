@@ -6,8 +6,6 @@ public class Users {
 	String name;
 	int age;
 	List<String> roles;
-	
-	
 	public String getName() {
 		return name;
 	}

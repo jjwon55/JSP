@@ -3,15 +3,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>액션 태그 - forward - A 화면</title>
+	<meta charset="UTF-8">
+	<title>액션 태그 - forward - A 화면</title>
 </head>
 <body>
 	<h1>forward A화면</h1>
 	<jsp:forward page="forward_B.jsp">
-		<jsp:param value="test" name="name"/>
-		<jsp:param value='<%= request.getParameter("age") %>' name="age"/>
+		<jsp:param name="name" value="test"/>
+		<jsp:param name="age"
+				   value='<%= request.getParameter("age") %>'/>
 	</jsp:forward>
-	<p>--------------------</p>
+	<p>---------------</p>
 </body>
 </html>
+
+
+
+
+
+
+

@@ -27,13 +27,11 @@ public class B extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-        String name = request.getParameter("name");
-        
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html; charset: UTF-8;");
-        response.getWriter().append("B 화면입니다. <br>").append("name : " + name);
-	
-	
+		String name = request.getParameter("name");
+		
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html; charset: UTF-8;");
+		response.getWriter().append("B 화면입니다. <br>").append("name : " + name);
 	}
 
 	/**
@@ -45,3 +43,6 @@ public class B extends HttpServlet {
 	}
 
 }
+
+
+

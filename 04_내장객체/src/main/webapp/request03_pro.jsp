@@ -14,10 +14,17 @@
 		// 모든 파라미터 이름 가져오기
 		Enumeration<String> params = request.getParameterNames();
 		while( params.hasMoreElements() ) {
-			String paramName = params.nextElement();		// 파라미터 이름
-			String paramValue = request.getParameter(paramName);		// 값
+			String paramName = params.nextElement();	// 파라미터 이름
+			String paramValue = request.getParameter(paramName); // 값
 			out.println("<h3>" + paramName + " : " + paramValue + "</h3>");
 		}
 	%>
 </body>
 </html>
+
+
+
+
+
+
+

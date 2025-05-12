@@ -3,22 +3,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>스크립틀릿</title>
+	<meta charset="UTF-8">
+	<title>스크립틀릿</title>
 </head>
 <body>
 	<%
-		for( int i = 1 ; i <= 10 ; i++) {
+		for( int i = 1 ; i <= 10 ; i++ ) {
 			out.print("<h3>" + i + "</h3>");
 		}
 	%>
 	<hr>
 	<%
-		for( int i = 1 ; i <= 10 ; i++) {
+		for( int i = 1 ; i <= 10 ; i++ ) {
 	%>
 		<h3><%= i %></h3>
 	<%
-	}
-	%>	
+		}
+	%>
 </body>
 </html>
+
+
+
+
+
+

@@ -12,15 +12,18 @@
   
   <!-- 서블릿 등록 -->
   <servlet>
-  <servlet-name>SampleServlet</servlet-name>
-  <servlet-class>web.SampleServlet</servlet-class>
+  	<servlet-name>SampleServlet</servlet-name>
+  	<servlet-class>web.SampleServlet</servlet-class>
   </servlet>
   
-
- <!-- 서블릿 요청경로 매핑 -->
- <servlet-mapping>
- <servlet-name>SampleServlet</servlet-name>
- <url-pattern>/SampleServlet</url-pattern>
- </servlet-mapping>
-  
+  <!-- 서블릿 요청경로 매핑 -->
+  <servlet-mapping>
+  	<servlet-name>SampleServlet</servlet-name>
+  	<url-pattern>/SampleServlet</url-pattern>
+  </servlet-mapping>
 </web-app>
+
+
+
+
+

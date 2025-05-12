@@ -4,16 +4,22 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>내장 객체 - request</title>
+	<title>내장 객체 - requset</title>
 </head>
 <body>
 	<%
 		request.setCharacterEncoding("UTF-8");
-		String id = request.getParameter("id");
+		String id = request.getParameter("id");	
 		String pw = request.getParameter("pw");
 	%>
 	
 	<h1>아이디 : <%= id %></h1>
-	<h1>비밀번호: <%= pw %></h1>
+	<h1>비밀번호 : <%= pw %></h1>
 </body>
 </html>
+
+
+
+
+
+
