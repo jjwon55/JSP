@@ -35,11 +35,12 @@ public class LoginManager {
 	
 	// 사용자 제거
 	public void removeUser(String sesseionId) {
-		List<String> sessionIdList = (List<String>) loginUsers.values();
-		for (int i = 0; i < sessionIdList.size(); i++) {
-			String id = sessionIdList.get(i);
-			if (sesseionId.equals(id)) {
-				sessionIdList.remove(i);
+		List<String> userIdList = (List<String>) loginUsers.values();
+		for (int i = 0; i < userIdList.size(); i++) {
+			String id = userIdList.get(i);
+			String sid = loginUsers.get(id);
+			if (sesseionId.equals(sid)) {
+				loginUsers.remove(id);
 				
 			}
 			
