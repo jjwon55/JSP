@@ -1,3 +1,4 @@
+<%@page import="java.util.Iterator"%>
 <%@page import="org.apache.commons.fileupload2.jakarta.*"%>   <%-- Jakarta Servlet을 위한 Commons FileUpload 클래스 임포트 --%>
 <%@page import="org.apache.commons.fileupload2.core.*"%>      <%-- Commons FileUpload의 코어 기능 클래스 임포트 --%>
 <%@page import="java.nio.charset.StandardCharsets"%>          <%-- 문자 인코딩 상수 사용을 위한 임포트 --%>
@@ -24,29 +25,33 @@
 	// 임시 파일 저장 경로 설정 (java의 기본 tmp 디렉토리)
 	File repository = new File( System.getProperty("java.io.tmpdir") );
 
-	// FileItemFactory 설정: 업로드된 항목을 생성하는 공장 객체
-	FileItemFactory factory = DiskFileItemFactory.builder().setFile(repository).get();
+	// FileItemFactory 설정: 업로드된 항목을 생성하는 팩토리 객체
+	FileItemFactory<DiskFileItem> factory = DiskFileItemFactory.builder().setFile(repository).get();
 
     // Servlet 기반 파일 업로드 객체 생성
-	JakartaServletFileUpload upload = new JakartaServletFileUpload(factory);
+	JakartaServletFileUpload<DiskFileItem, FileItemFactory<DiskFileItem>> upload = new JakartaServletFileUpload<>(factory);
 
-	// 현재 요청을 파싱하기 위한 Context 객체 생성
+	// request 를 번환하기 위한 Contetxt 객체 생성
 	JakartaServletRequestContext context = new JakartaServletRequestContext(request);
+	
 	
 	try {
 		// 요청에서 form field 및 파일을 파싱하여 리스트로 가져옴
-		List<FileItem> items = upload.parseRequest(context);
+		List<DiskFileItem> items = upload.parseRequest(context);
 
-		for( FileItem item : items ) {  // 리스트의 각 항목에 대해 처리
-			// 텍스트 폼 필드인 경우
+		for( DiskFileItem item : items ) {  // 리스트의 각 항목에 대해 처리
+			// 텍스트 필드인 경우
 			if( item.isFormField() ) {
 				// UTF-8로 인코딩된 값 출력
-				out.println(item.getFieldName() + " : " + item.getString(StandardCharsets.UTF_8) + "<br>");
+				String name = item.getFieldName();		// 필드 이름
+				String value = item.getString(StandardCharsets.UTF_8);	 //값
+				out.println(name + " : " + value + "<br>");
 			}
 			// 파일 업로드 필드인 경우
 			else {
 				String fieldName = item.getFieldName();     // 필드 이름
-				String fileName = item.getName();           // 업로드된 파일 이름
+				String fileName = item.getName();			// 파일 이름
+				// 업로드된 파일 이름
 				String uploadedName = System.currentTimeMillis() + "_" + item.getName();  // 저장 시 사용할 파일 이름
 
 				// 파일명이 비어있지 않으면
