@@ -1,0 +1,13 @@
+
+
+DROP TABLE IF EXISTS test;
+CREATE TABLE test (
+	`no`   INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`name` VARCHAR(100) NOT NULL,
+	`age`  INT NULL DEFAULT 1,
+	`main_title` TEXT NULL
+);
+
+SELECT *
+FROM test
+;
