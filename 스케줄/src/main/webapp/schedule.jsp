@@ -1,156 +1,87 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="java.sql.*, java.util.*" %>
-<%
-  String selectedDate = request.getParameter("date");
-  if (selectedDate == null || selectedDate.trim().isEmpty()) {
-    selectedDate = "";
-  }
-%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> <%-- 문자열 이스케이프 처리용 --%>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <title>트레이너 시간표 - 최종본</title>
-  <link rel="stylesheet" href="css/123.css">
+  <jsp:include page="/WEB-INF/views/layout/link.jsp" />
+
+  <!-- ✅ Choices.js CSS 추가 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 </head>
 <body>
-  <div class="header">
-    <div class="logo">
-      <img src="img/ChatGPT Image 2025년 5월 16일 오후 06_09_58.png" alt="할건해야짐" />
-    </div>
-    <ul class="nav">
-      <li>회원관리</li>
-      <li>기구현황</li>
-      <li>매출현황</li>
-      <li>문의사항</li>
-      <li>로그아웃</li>
-    </ul>
-  </div>
+<jsp:include page="/WEB-INF/views/layout/header.jsp" />
+<main>
+	<div class="container-fluid d-flex gap-3 px-1 my-2">
+		<div class="calendar border rounded p-3 bg-light" id="calendar" style="width: 630px; height: 1000px;"></div>
+		<div class="schedule flex-grow-1 border rounded p-3 bg-light">
+			<h3 id="selected-date-title" class="mb-3 d-flex justify-content-center">
+				<c:choose>
+					<c:when test="${empty selectedDate}">날짜를 선택하세요</c:when>
+					<c:otherwise>${selectedDate} 예약 스케줄</c:otherwise>
+				</c:choose>
+			</h3>
 
-  <div class="container">
-    <div class="calendar" id="calendar"></div>
-    <div class="schedule">
-      <h3 id="selected-date-title">날짜를 선택하세요</h3>
-      <form action="ScheduleSaveServlet" method="post">
-        <input type="hidden" name="date" id="selected-date-value" value="<%= selectedDate %>">
-        <div class="buttons">
-          <button type="submit">저장</button>
-          <button type="button" onclick="enableEditing()">수정</button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>시간</th>
-              <th>김계란</th>
-              <th>손흥민</th>
-              <th>이강인</th>
-              <th>기성용</th>
-              <th>박지성</th>
-            </tr>
-          </thead>
-          <tbody id="schedule-body"></tbody>
-        </table>
-      </form>
-    </div>
-  </div>
+			<!-- ✅ action="schedule" 으로 수정 -->
+			<form action="/schedule" method="post">
+				<input type="hidden" name="date" id="selected-date-value" value="${selectedDate}">
 
-  <script src="js/123.js"></script>
-  <script>
-  function enableEditing() {
-    document.querySelectorAll('input[type="text"]').forEach(input => input.disabled = false);
-  }
+				<div class="text-end mb-3">
+					<button type="submit" class="btn btn-success px-4">저장하기</button>
+				</div>
 
-  // 날짜 클릭 시 해당 날짜로 이동
-  function selectDate(dateStr) {
-    window.location.href = "schedule.jsp?date=" + dateStr;
-  }
+				<div class="table-responsive">
+					<table class="table table-bordered text-center align-middle">
+						<thead class="table-light">
+							<tr>
+								<th style="width: 110px;">시간</th>
+								<c:forEach var="t" items="${trainerList}">
+									<th>${t}</th>
+								</c:forEach>
+							</tr>
+						</thead>
+						<tbody id="schedule-body">
+							<!-- JS가 자동 생성 -->
+						</tbody>
+					</table>
+				</div>
+			</form>
+		</div>
+	</div>
+</main>
+<jsp:include page="/WEB-INF/views/layout/footer.jsp" />
 
-  // pad 함수 정의
-  function pad(n) {
-    return n < 10 ? '0' + n : n;
-  }
+<!-- JSTL → JS 데이터로 변환 -->
+<script>
+  const initialSelectedDate = "${selectedDate}";
+  const trainers = [
+    <c:forEach var="t" items="${trainerList}" varStatus="loop">
+      "${t}"<c:if test="${!loop.last}">,</c:if>
+    </c:forEach>
+  ];
 
-  // 달력 렌더링
-  const calendar = document.getElementById("calendar");
-  const today = new Date();
-  let year = today.getFullYear();
-  let month = today.getMonth(); // 0 ~ 11
+  const savedEntries = [
+    <c:forEach var="entry" items="${scheduleList}" varStatus="loop">
+      {
+        "trainer": "${entry.trainer}",
+        "time": "${entry.time}",
+        "memo": "${fn:replace(entry.memo, '\"', '\\\"')}",
+        "checked": ${entry.checked}
+      }<c:if test="${!loop.last}">,</c:if>
+    </c:forEach>
+  ];
 
-  function renderCalendar(y, m) {
-    calendar.innerHTML = "";
-
-    const header = document.createElement("div");
-    header.className = "calendar-header";
-
-    const prev = document.createElement("span");
-    prev.textContent = "<";
-    prev.onclick = () => renderCalendar(y, m - 1);
-
-    const next = document.createElement("span");
-    next.textContent = ">";
-    next.onclick = () => renderCalendar(y, m + 1);
-
-    const title = document.createElement("div");
-    title.className = "calendar-title";
-    title.textContent = y + "년 " + (m + 1) + "월";
-
-    header.appendChild(prev);
-    header.appendChild(title);
-    header.appendChild(next);
-    calendar.appendChild(header);
-
-    const grid = document.createElement("div");
-    grid.className = "calendar-grid";
-    const days = ["일", "월", "화", "수", "목", "금", "토"];
-    days.forEach(day => {
-      const dayCell = document.createElement("div");
-      dayCell.className = "calendar-day";
-      dayCell.textContent = day;
-      grid.appendChild(dayCell);
-    });
-
-    const firstDay = new Date(y, m, 1).getDay();
-    const lastDate = new Date(y, m + 1, 0).getDate();
-
-    for (let i = 0; i < firstDay; i++) grid.appendChild(document.createElement("div"));
-
-    for (let d = 1; d <= lastDate; d++) {
-      const cell = document.createElement("div");
-      cell.className = "calendar-date";
-      cell.textContent = d;
-
-      const dateStr = y + "-" + pad(m + 1) + "-" + pad(d);
-
-      cell.onclick = () => selectDate(dateStr);
-      grid.appendChild(cell);
-    }
-
-    calendar.appendChild(grid);
-  }
-  
-  document.querySelector("form").addEventListener("submit", () => {
-	    const title = document.getElementById("selected-date-title").textContent;
-	    const date = title.split(" ")[0]; // "2025-05-22 예약 스케줄"
-	    document.getElementById("selected-date-value").value = date;
-	  });
-
-  renderCalendar(year, month);
+  const memberList = [
+	  <c:forEach var="m" items="${memberList}" varStatus="loop">
+	    { id: "${m.memberId}", name: "${m.name}", phone: "${m.phone}" }<c:if test="${!loop.last}">,</c:if>
+	  </c:forEach>
+	];
 </script>
-  
+<script src="static/js/schedule.js"></script>
+<!-- ✅ Choices.js JS 추가 -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 </body>
-
-<footer class="footer">
-  <div class="footer-top">
-    <img src="img/ChatGPT Image 2025년 5월 16일 오후 06_09_58.png" alt="할건해야짐" class="footer-logo" />
-    <ul class="footer-menu">
-      <li>회원관리</li>
-      <li>기구현황</li>
-      <li>매출관리</li>
-      <li>문의사항</li>
-    </ul>
-  </div>
-  <div class="footer-bottom">
-    카피라이트 어쩌고
-  </div>
-</footer>
 </html>

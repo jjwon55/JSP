@@ -1,17 +1,17 @@
-/**
- * 
- */const calendar = document.getElementById("calendar");
+const calendar = document.getElementById("calendar");
 const selectedDateTitle = document.getElementById("selected-date-title");
 const scheduleBody = document.getElementById("schedule-body");
-const previewBox = document.getElementById("preview-box");
-const previewContent = document.getElementById("preview-content");
 const selectedData = [];
 
-let current = new Date();
+const baseHours = ["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
+const trainers = ["김계란", "손흥민", "이강인", "기성용", "박지성"];
+
+function pad(n) {
+  return n < 10 ? '0' + n : n;
+}
 
 function renderCalendar(date = new Date()) {
   calendar.innerHTML = "";
-
   const year = date.getFullYear();
   const month = date.getMonth();
   const firstDay = new Date(year, month, 1).getDay();
@@ -42,6 +42,7 @@ function renderCalendar(date = new Date()) {
 
   const grid = document.createElement("div");
   grid.className = "calendar-grid";
+
   const days = ["일", "월", "화", "수", "목", "금", "토"];
   days.forEach(day => {
     const dayCell = document.createElement("div");
@@ -56,16 +57,21 @@ function renderCalendar(date = new Date()) {
     const cell = document.createElement("div");
     cell.className = "calendar-date";
     cell.textContent = d;
-    const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    const dateStr = `${year}-${pad(month + 1)}-${pad(d)}`;
 
+    // 오늘 날짜 강조
     if (d === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
       cell.classList.add("today");
     }
 
-    cell.addEventListener("click", () => {
-      document.querySelectorAll(".calendar-date").forEach(el => el.classList.remove("selected"));
+    // 선택된 날짜 표시
+    if (initialSelectedDate && initialSelectedDate === dateStr) {
       cell.classList.add("selected");
-      selectDate(dateStr);
+    }
+
+    // 날짜 클릭 시 이동
+    cell.addEventListener("click", () => {
+      window.location.href = `schedule.jsp?date=${dateStr}`;
     });
 
     grid.appendChild(cell);
@@ -74,17 +80,8 @@ function renderCalendar(date = new Date()) {
   calendar.appendChild(grid);
 }
 
-function selectDate(dateStr) {
-  selectedDateTitle.textContent = `${dateStr} 예약 스케줄`;
-  renderSchedule();
-  previewBox.style.display = "none";
-}
-
 function renderSchedule() {
   scheduleBody.innerHTML = "";
-  const baseHours = ["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
-  const trainers = ["김계란", "손흥민", "이강인", "기성용", "박지성"];
-
   baseHours.forEach(hour => {
     const [h, m] = hour.split(":");
     const baseTime = new Date(0, 0, 0, +h, +m);
@@ -92,7 +89,6 @@ function renderSchedule() {
     for (let i = 0; i < 2; i++) {
       const time = new Date(baseTime.getTime() + i * 30 * 60000);
       const nextTime = new Date(time.getTime() + 30 * 60000);
-
       const timeStr = time.toTimeString().substring(0, 5);
       const nextStr = nextTime.toTimeString().substring(0, 5);
 
@@ -124,20 +120,15 @@ function renderSchedule() {
 
         wrapper.addEventListener("click", () => {
           checkbox.checked = !checkbox.checked;
-          if (checkbox.checked) {
-            td.classList.add("selected-time");
-            input.disabled = false;
-            input.focus();
-          } else {
-            td.classList.remove("selected-time");
-            input.disabled = true;
-            input.value = "";
-          }
+          td.classList.toggle("selected-time", checkbox.checked);
+          input.disabled = !checkbox.checked;
+          if (checkbox.checked) input.focus();
+          else input.value = "";
         });
 
         input.addEventListener("click", e => {
           e.stopPropagation();
-          wrapper.click(); // ✅ input 클릭 시 wrapper 클릭 발생
+          wrapper.click();
         });
 
         checkbox.addEventListener("click", e => e.stopPropagation());
@@ -157,18 +148,6 @@ function renderSchedule() {
   });
 }
 
-function saveData() {
-  selectedData.length = 0;
-  document.querySelectorAll(".selected-time").forEach(cell => {
-    const time = cell.dataset.time;
-    const trainer = cell.dataset.trainer;
-    const value = cell.querySelector("input[type='text']").value;
-    selectedData.push({ trainer, time, memo: value });
-  });
-  previewContent.textContent = JSON.stringify(selectedData, null, 2);
-  previewBox.style.display = "block";
-}
-
 function enableEditing() {
   document.querySelectorAll(".selected-time .cell-input").forEach(input => {
     input.disabled = false;
@@ -176,10 +155,42 @@ function enableEditing() {
   });
 }
 
-document.querySelector("form").addEventListener("submit", () => {
+document.querySelector("form").addEventListener("submit", (e) => {
+  const form = e.target;
+
+  // 기존 hidden input 제거
+  document.querySelectorAll(".dynamic-entry").forEach(el => el.remove());
+
+  const cells = document.querySelectorAll(".selected-time");
+  cells.forEach((cell, i) => {
+    const trainer = cell.dataset.trainer;
+    const time = cell.dataset.time;
+    const memo = cell.querySelector("input[type='text']").value.trim();
+    const checked = true;
+
+    const createHiddenInput = (name, value) => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = `entries[${i}].${name}`;
+      input.value = value;
+      input.classList.add("dynamic-entry");
+      form.appendChild(input);
+    };
+
+    createHiddenInput("trainer", trainer);
+    createHiddenInput("time", time);
+    createHiddenInput("memo", memo);
+    createHiddenInput("checked", checked);
+  });
+
   const title = document.getElementById("selected-date-title").textContent;
-  const date = title.split(" ")[0]; // "2025-05-22 예약 스케줄" → "2025-05-22"
+  const date = title.split(" ")[0];
   document.getElementById("selected-date-value").value = date;
 });
 
+// 실행
 renderCalendar();
+if (typeof initialSelectedDate !== "undefined" && initialSelectedDate) {
+  selectedDateTitle.textContent = `${initialSelectedDate} 예약 스케줄`;
+  renderSchedule();
+}
