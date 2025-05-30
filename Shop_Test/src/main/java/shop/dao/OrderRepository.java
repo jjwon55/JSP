@@ -41,7 +41,15 @@ public class OrderRepository extends JDBConnection {
 	 * @return
 	 */
 	public int lastOrderNo() {
-		
+		int result = 0;
+		String sql = "SELECT MAX(order_no) FROM order";
+		try {
+			psmt = con.prepareStatement(sql);
+			result = s
+		} catch (Exception e) {
+			
+		}
+		return result;
 	}
 
 	
@@ -51,7 +59,7 @@ public class OrderRepository extends JDBConnection {
 	 * @return
 	 */
 	public List<Product> list(String userId) {
-
+		
 	}
 	
 	/**
