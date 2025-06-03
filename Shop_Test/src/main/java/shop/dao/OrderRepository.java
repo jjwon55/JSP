@@ -45,9 +45,14 @@ public class OrderRepository extends JDBConnection {
 		String sql = "SELECT MAX(order_no) FROM order";
 		try {
 			psmt = con.prepareStatement(sql);
-			result = s
-		} catch (Exception e) {
+			rs = psmt.executeQuery();
 			
+			if (rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (Exception e) {
+		System.err.println("최근 등록한 orderNo 조회 중 오류");
+		e.printStackTrace();
 		}
 		return result;
 	}
@@ -59,7 +64,20 @@ public class OrderRepository extends JDBConnection {
 	 * @return
 	 */
 	public List<Product> list(String userId) {
-		
+		String sql = """
+					SELECT p.product_id, p.name, p.unit_price, pi.amount
+			    	FROM `order` o
+				    JOIN product_io pi ON o.order_no = pi.order_no
+				    JOIN product p ON pi.product_id = p.product_id
+				    WHERE o.user_id = ? AND pi.type = 'OUT'
+					""";
+		try {
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return list;
 	}
 	
 	/**
